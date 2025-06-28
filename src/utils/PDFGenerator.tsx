@@ -1,0 +1,170 @@
+import React from 'react';
+import { jsPDF } from 'jspdf';
+import 'jspdf/dist/polyfills.es.js';
+interface Answer {
+  question: string;
+  userAnswer: string;
+  correctAnswer: string;
+  isCorrect: boolean;
+}
+interface PDFData {
+  userName: string;
+  language: string;
+  score: number;
+  timeSpent: string;
+  remarks: string;
+  totalQuestions: number;
+  correctAnswers: number;
+  incorrectAnswers: number;
+  unanswered: number;
+  answers: Answer[];
+}
+export const generatePDF = (data: PDFData) => {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  });
+  // Add background color
+  doc.setFillColor(33, 37, 41); // dark gray
+  doc.rect(0, 0, 210, 297, 'F');
+  // Header
+  doc.setTextColor(255, 255, 255); // white
+  doc.setFontSize(24);
+  doc.text('CodeQuiz Assessment Certificate', 105, 20, {
+    align: 'center'
+  });
+  doc.setFontSize(16);
+  doc.setTextColor(150, 208, 255); // light blue
+  doc.text(`${data.language} Assessment`, 105, 30, {
+    align: 'center'
+  });
+  // User info
+  doc.setFontSize(12);
+  doc.setTextColor(200, 200, 200); // light gray
+  doc.text(`Completed by: ${data.userName || 'Anonymous'}`, 105, 40, {
+    align: 'center'
+  });
+  doc.text(`Date: ${new Date().toLocaleDateString()}`, 105, 48, {
+    align: 'center'
+  });
+  // Score circle
+  const centerX = 105;
+  const centerY = 80;
+  const radius = 25;
+  // Draw background circle
+  doc.setDrawColor(80, 80, 80); // dark gray
+  doc.setLineWidth(3);
+  doc.circle(centerX, centerY, radius, 'S');
+  // Draw progress arc
+  const getScoreColor = () => {
+    if (data.score >= 90) return {
+      r: 16,
+      g: 185,
+      b: 129
+    }; // green
+    if (data.score >= 70) return {
+      r: 34,
+      g: 211,
+      b: 238
+    }; // cyan
+    if (data.score >= 50) return {
+      r: 251,
+      g: 191,
+      b: 36
+    }; // yellow
+    return {
+      r: 248,
+      g: 113,
+      b: 113
+    }; // red
+  };
+  const scoreColor = getScoreColor();
+  doc.setDrawColor(scoreColor.r, scoreColor.g, scoreColor.b);
+  doc.setLineWidth(3);
+  // Draw arc
+  const startAngle = -90 * (Math.PI / 180); // Start from top
+  const endAngle = startAngle + data.score / 100 * (2 * Math.PI);
+  // Draw arc manually with small line segments
+  const segments = 100;
+  const angleStep = (endAngle - startAngle) / segments;
+  doc.setLineCap('round');
+  for (let i = 0; i < segments; i++) {
+    const angle1 = startAngle + i * angleStep;
+    const angle2 = startAngle + (i + 1) * angleStep;
+    const x1 = centerX + radius * Math.cos(angle1);
+    const y1 = centerY + radius * Math.sin(angle1);
+    const x2 = centerX + radius * Math.cos(angle2);
+    const y2 = centerY + radius * Math.sin(angle2);
+    doc.line(x1, y1, x2, y2);
+  }
+  // Score text
+  doc.setFontSize(24);
+  doc.setTextColor(255, 255, 255); // white
+  doc.text(`${data.score}%`, centerX, centerY, {
+    align: 'center'
+  });
+  doc.setFontSize(12);
+  doc.setTextColor(200, 200, 200); // light gray
+  doc.text('Score', centerX, centerY + 10, {
+    align: 'center'
+  });
+  // Remarks
+  doc.setFontSize(14);
+  doc.setTextColor(scoreColor.r, scoreColor.g, scoreColor.b);
+  doc.text(data.remarks, 105, 120, {
+    align: 'center'
+  });
+  // Summary
+  doc.setFontSize(14);
+  doc.setTextColor(255, 255, 255); // white
+  doc.text('Assessment Summary', 20, 140);
+  doc.setFontSize(10);
+  doc.setTextColor(200, 200, 200); // light gray
+  doc.text(`Total Questions: ${data.totalQuestions}`, 20, 150);
+  doc.text(`Correct Answers: ${data.correctAnswers}`, 20, 157);
+  doc.text(`Incorrect Answers: ${data.incorrectAnswers}`, 20, 164);
+  doc.text(`Unanswered: ${data.unanswered}`, 20, 171);
+  doc.text(`Time Spent: ${data.timeSpent}`, 20, 178);
+  // Detailed answers
+  doc.setFontSize(14);
+  doc.setTextColor(255, 255, 255); // white
+  doc.text('Detailed Question Analysis', 20, 195);
+  let yPosition = 205;
+  data.answers.forEach((answer, index) => {
+    // Check if we need a new page
+    if (yPosition > 270) {
+      doc.addPage();
+      yPosition = 20;
+      // Add background color to new page
+      doc.setFillColor(33, 37, 41); // dark gray
+      doc.rect(0, 0, 210, 297, 'F');
+    }
+    doc.setFontSize(10);
+    doc.setTextColor(200, 200, 200); // light gray
+    doc.text(`Question ${index + 1}: ${truncateText(answer.question, 80)}`, 20, yPosition);
+    yPosition += 7;
+    doc.setTextColor(answer.isCorrect ? 16 : 248, answer.isCorrect ? 185 : 113, answer.isCorrect ? 129 : 113);
+    doc.text(`Your Answer: ${truncateText(answer.userAnswer || 'No answer provided', 80)}`, 25, yPosition);
+    yPosition += 7;
+    if (!answer.isCorrect) {
+      doc.setTextColor(16, 185, 129); // green
+      doc.text(`Correct Answer: ${truncateText(answer.correctAnswer, 80)}`, 25, yPosition);
+      yPosition += 7;
+    }
+    yPosition += 5;
+  });
+  // Footer
+  doc.setFontSize(8);
+  doc.setTextColor(150, 150, 150); // gray
+  doc.text('Generated by CodeQuiz Assessment Platform', 105, 290, {
+    align: 'center'
+  });
+  // Save the PDF
+  doc.save(`${data.language.toLowerCase()}_assessment_certificate.pdf`);
+};
+// Helper function to truncate text
+function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + '...';
+}
