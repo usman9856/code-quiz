@@ -1,25 +1,38 @@
-import React from 'react';
-import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { LanguageGrid } from './components/LanguageGrid';
-import { Footer } from './components/Footer';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AboutPage } from './pages/AboutPage';
 import { TestPage } from './components/test/TestPage';
-import { ResultsPage } from './components/results/ResultsPage';
-export function App() {
-  // Simple routing based on URL path
-  const path = window.location.pathname;
-  if (path === '/test') {
-    return <TestPage />;
-  }
-  if (path === '/results') {
-    return <ResultsPage />;
-  }
-  return <div className="min-h-screen bg-gray-900 text-white font-['Inter',sans-serif]">
-      <Navbar />
-      <main className="w-full">
-        <Hero />
-        <LanguageGrid />
-      </main>
-      <Footer />
-    </div>;
-}
+import HomePage from './pages/HomePage';
+import { Layout } from './layout/Layout';
+
+const App = () => (
+  <Router>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Layout>
+            <HomePage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/about"
+        element={
+          <Layout>
+            <AboutPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/test"
+        element={
+          <Layout>
+            <TestPage />
+          </Layout>
+        }
+      />
+    </Routes>
+  </Router>
+);
+
+export default App;
