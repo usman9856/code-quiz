@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { TestWarningModal } from "./TestWarningModal";
 import { TestQuestion } from "./TestQuestion";
 import { TestProgressBar } from "./TestProgressBar";
 import { TestNavigation } from "./TestNavigation";
 import { EndTestConfirmation } from "./EndTestConfirmation";
-import { GoogleFrame } from "./GoogleFrame";
 import { LoadingOverlay } from "./LoadingOverlay";
+import { CODE_SAMPLES } from "../../constants/globalConstants";
+import { GlobalStore } from "../../store/GlobalStore";
+
+
 export const TestPage = () => {
   const [testStarted, setTestStarted] = useState(false);
   const [showEndConfirmation, setShowEndConfirmation] = useState(false);
@@ -17,54 +20,18 @@ export const TestPage = () => {
   const [transitionDirection, setTransitionDirection] = useState<
     "next" | "prev" | null
   >(null);
-  // Sample questions data
-  const questions = [
-    {
-      id: 1,
-      question:
-        "What is the correct way to declare a variable in JavaScript that cannot be reassigned?",
-      options: [
-        "var x = 5;",
-        "let x = 5;",
-        "const x = 5;",
-        "static x = 5;",
-        "fixed x = 5;",
-      ],
-      correctAnswer: "const x = 5;",
-    },
-    {
-      id: 2,
-      question: "Which of the following is NOT a JavaScript data type?",
-      options: ["String", "Boolean", "Float", "Object", "Undefined"],
-      correctAnswer: "Float",
-    },
-    {
-      id: 3,
-      question: "What does the 'this' keyword refer to in JavaScript?",
-      options: [
-        "It refers to the current function",
-        "It refers to the current object",
-        "It refers to the parent object",
-        "It refers to the global window object",
-        "It depends on how the function is called",
-      ],
-      correctAnswer: "It depends on how the function is called",
-    },
-    {
-      id: 4,
-      question:
-        "Which method is used to add an element at the end of an array in JavaScript?",
-      options: ["push()", "pop()", "append()", "concat()", "join()"],
-      correctAnswer: "push()",
-    },
-    {
-      id: 5,
-      question: "What is the output of: console.log(typeof [])?",
-      options: ["array", "object", "undefined", "null", "list"],
-      correctAnswer: "object",
-    },
-  ];
-  // Disable right-click
+
+  const selectedLanguage = GlobalStore((state) => state.selectedLang);
+  const fullQuestionSet = CODE_SAMPLES[selectedLanguage] || {};
+
+  const TOTAL_QUESTIONS = 5;
+  const questions = useMemo(() => {
+    return Object.entries(fullQuestionSet)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, TOTAL_QUESTIONS)
+      .map(([id, q]) => ({ id, ...(q as any) }));
+  }, [fullQuestionSet]);
+
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -77,10 +44,9 @@ export const TestPage = () => {
       document.removeEventListener("contextmenu", handleContextMenu);
     };
   }, [testStarted]);
-  // Disable keyboard shortcuts
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Prevent Ctrl+C, Ctrl+P, Ctrl+S, Alt+Tab, F12, PrintScreen
       if (
         (e.ctrlKey && (e.key === "c" || e.key === "p" || e.key === "s")) ||
         (e.altKey && e.key === "Tab") ||
@@ -90,7 +56,6 @@ export const TestPage = () => {
         e.preventDefault();
         return false;
       }
-      // Allow keyboard navigation with arrow keys
       if (
         e.key === "ArrowRight" &&
         currentQuestionIndex < questions.length - 1
@@ -99,12 +64,11 @@ export const TestPage = () => {
       } else if (e.key === "ArrowLeft" && currentQuestionIndex > 0) {
         handlePreviousQuestion();
       }
-      // Allow selecting options with number keys 1-5
       const num = parseInt(e.key);
       if (
         num >= 1 &&
         num <= 5 &&
-        num <= questions[currentQuestionIndex].options.length
+        num <= questions[currentQuestionIndex]?.options.length
       ) {
         handleSelectAnswer(questions[currentQuestionIndex].options[num - 1]);
       }
@@ -116,7 +80,7 @@ export const TestPage = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [testStarted, currentQuestionIndex]);
-  // Handle beforeunload event
+
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (testStarted) {
@@ -130,7 +94,7 @@ export const TestPage = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [testStarted]);
-  // Request fullscreen when test starts
+
   useEffect(() => {
     const enterFullscreen = async () => {
       if (testStarted && document.documentElement.requestFullscreen) {
@@ -143,7 +107,6 @@ export const TestPage = () => {
     };
     if (testStarted) {
       enterFullscreen();
-      // Set start time when test begins
       setStartTime(Date.now());
     }
     return () => {
@@ -154,21 +117,23 @@ export const TestPage = () => {
       }
     };
   }, [testStarted]);
+
   const handleStartTest = (name: string) => {
     setUserName(name);
     setLoading(true);
-    // Simulate loading
     setTimeout(() => {
       setTestStarted(true);
       setLoading(false);
     }, 1500);
   };
+
   const handleSelectAnswer = (answer: string) => {
     setAnswers((prev) => ({
       ...prev,
       [currentQuestionIndex]: answer,
     }));
   };
+
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setTransitionDirection("next");
@@ -177,10 +142,10 @@ export const TestPage = () => {
         setTransitionDirection(null);
       }, 300);
     } else {
-      // If on the last question, calculate and show results
       calculateAndShowResults();
     }
   };
+
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setTransitionDirection("prev");
@@ -190,23 +155,25 @@ export const TestPage = () => {
       }, 300);
     }
   };
+
   const handleEndTest = () => {
     setShowEndConfirmation(true);
   };
+
   const confirmEndTest = () => {
     setLoading(true);
     setTimeout(() => {
       calculateAndShowResults();
     }, 1000);
   };
+
   const calculateAndShowResults = () => {
-    // Exit fullscreen
     if (document.fullscreenElement && document.exitFullscreen) {
       document.exitFullscreen().catch((err) => {
         console.error("Error attempting to exit fullscreen:", err);
       });
     }
-    // Calculate results
+
     let correctCount = 0;
     let incorrectCount = 0;
     let unansweredCount = 0;
@@ -227,9 +194,8 @@ export const TestPage = () => {
         isCorrect,
       };
     });
-    // Calculate score as percentage
+
     const score = Math.round((correctCount / questions.length) * 100);
-    // Calculate time spent
     let timeSpent = "00:00";
     if (startTime) {
       const endTime = Date.now();
@@ -240,17 +206,13 @@ export const TestPage = () => {
         .toString()
         .padStart(2, "0")}`;
     }
-    // Generate remarks based on score
+
     let remarks = "";
-    if (score >= 90) remarks = "Excellent! You have mastered JavaScript!";
-    else if (score >= 70)
-      remarks = "Good job! You have a solid understanding of JavaScript.";
-    else if (score >= 50)
-      remarks = "Fair. Keep practicing to improve your JavaScript skills.";
-    else
-      remarks =
-        "Needs improvement. Consider reviewing JavaScript fundamentals.";
-    // Store results in sessionStorage
+    if (score >= 90) remarks = "Excellent! You have mastered this topic!";
+    else if (score >= 70) remarks = "Good job! Solid understanding.";
+    else if (score >= 50) remarks = "Fair. Keep practicing to improve.";
+    else remarks = "Needs improvement. Consider reviewing fundamentals.";
+
     const results = {
       userName,
       totalQuestions: questions.length,
@@ -258,24 +220,22 @@ export const TestPage = () => {
       incorrectAnswers: incorrectCount,
       unanswered: unansweredCount,
       score,
-      language: "JavaScript",
+      language: selectedLanguage,
       timeSpent,
       remarks,
       answers: detailedAnswers,
     };
     sessionStorage.setItem("testResults", JSON.stringify(results));
-    // Navigate to results page
     window.location.href = "/results";
   };
+
   const cancelEndTest = () => {
     setShowEndConfirmation(false);
   };
-  if (loading) {
-    return <LoadingOverlay />;
-  }
-  if (!testStarted) {
-    return <TestWarningModal onAgree={handleStartTest} />;
-  }
+
+  if (loading) return <LoadingOverlay />;
+  if (!testStarted) return <TestWarningModal onAgree={handleStartTest} />;
+
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       <TestProgressBar
@@ -284,13 +244,12 @@ export const TestPage = () => {
       />
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         <div
-          className={`w-full transition-all duration-300 transform ${
-            transitionDirection === "next"
-              ? "translate-x-full opacity-0"
-              : transitionDirection === "prev"
+          className={`w-full transition-all duration-300 transform ${transitionDirection === "next"
+            ? "translate-x-full opacity-0"
+            : transitionDirection === "prev"
               ? "-translate-x-full opacity-0"
               : "translate-x-0 opacity-100"
-          }`}
+            }`}
         >
           <TestQuestion
             question={questions[currentQuestionIndex].question}
@@ -310,7 +269,6 @@ export const TestPage = () => {
           isNextDisabled={currentQuestionIndex === questions.length - 1}
         />
       </div>
-      {/* <GoogleFrame /> */}
       {showEndConfirmation && (
         <EndTestConfirmation
           onConfirm={confirmEndTest}
