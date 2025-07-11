@@ -1,7 +1,5 @@
 import React from "react";
-import { CodeIcon } from "lucide-react";
 import { CodeSnippet } from "./modular/CodeSnippet";
-import { CODE_SAMPLES } from "../constants/globalConstants";
 
 
 export const Hero = () => {

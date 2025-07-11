@@ -18,7 +18,6 @@ export const ScoreCircle: React.FC<ScoreCircleProps> = ({
   useEffect(() => {
     let start = 0;
     const duration = 2000;
-    const increment = 20;
     let timer: number;
     const animateScore = (timestamp: number) => {
       if (!start) start = timestamp;

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { LanguageCard } from '../components/LanguageCard';
 export const LanguagesPage = () => {
   const languages = [{

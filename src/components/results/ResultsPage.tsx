@@ -55,16 +55,18 @@ export const ResultsPage: React.FC = () => {
       setLoading(false);
       // Try to get results from sessionStorage (in a real app)
       const storedResults = sessionStorage.getItem('testResults');
+      let currentResults = results;
       if (storedResults) {
         try {
           const parsedResults = JSON.parse(storedResults);
           setResults(parsedResults);
+          currentResults = parsedResults;
         } catch (e) {
           console.error('Failed to parse stored results', e);
         }
       }
       // Trigger confetti for high scores
-      if (results.score >= 70) {
+      if (currentResults.score >= 70) {
         setTimeout(() => {
           confetti({
             particleCount: 100,
@@ -76,6 +78,7 @@ export const ResultsPage: React.FC = () => {
         }, 1000);
       }
     }, 1500);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const getScoreColor = () => {
     if (results.score >= 90) return 'from-green-400 to-emerald-500';

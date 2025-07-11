@@ -1,6 +1,9 @@
 import React from "react";
 import { CODE_SAMPLES } from "../constants/globalConstants";
 import { GlobalStore } from "../store/GlobalStore";
+import { useNavigate } from "react-router-dom";
+import { TestWarningModal } from "./test/TestWarningModal";
+import { handleStartTest } from "../utils/handleStartTest";
 
 
 interface LanguageCardProps {
@@ -17,7 +20,8 @@ export const LanguageCard = ({
   color,
 }: LanguageCardProps) => {
   const setSelectedLang = GlobalStore((state) => state.setSelectedLang); // <-- Use store
-
+  const testStarted = GlobalStore((state) => state.testStarted);
+  const navigate = useNavigate();
   const handleClick = () => {
     const langKey = title.toLowerCase() as keyof typeof CODE_SAMPLES;
 
@@ -28,6 +32,10 @@ export const LanguageCard = ({
     }
   };
 
+
+  if (testStarted) return (
+    <TestWarningModal onAgree={(name) => handleStartTest(name, navigate)} />
+  );
   return (
     <div
       onClick={handleClick}

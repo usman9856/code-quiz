@@ -43,7 +43,7 @@ const App = () => (
         }
       />
       <Route
-        path="/result"
+        path="/results"
         element={
           <Layout>
             <ResultsPage />

@@ -11,7 +11,6 @@ export const ResultsSummary: React.FC<ResultsSummaryProps> = ({
   correctAnswers,
   incorrectAnswers,
   unanswered,
-  totalQuestions,
   timeSpent
 }) => {
   return <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">

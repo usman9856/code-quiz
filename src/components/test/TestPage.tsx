@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { TestWarningModal } from "./TestWarningModal";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { TestQuestion } from "./TestQuestion";
 import { TestProgressBar } from "./TestProgressBar";
 import { TestNavigation } from "./TestNavigation";
@@ -8,29 +8,28 @@ import { LoadingOverlay } from "./LoadingOverlay";
 import { CODE_SAMPLES } from "../../constants/globalConstants";
 import { GlobalStore } from "../../store/GlobalStore";
 
-
 export const TestPage = () => {
-  const [testStarted, setTestStarted] = useState(false);
+  const navigate = useNavigate();
   const [showEndConfirmation, setShowEndConfirmation] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(false);
   const [transitionDirection, setTransitionDirection] = useState<
     "next" | "prev" | null
   >(null);
 
+  const testStarted = GlobalStore((state) => state.testStarted);
   const selectedLanguage = GlobalStore((state) => state.selectedLang);
-  const fullQuestionSet = CODE_SAMPLES[selectedLanguage] || {};
 
   const TOTAL_QUESTIONS = 5;
   const questions = useMemo(() => {
+    const fullQuestionSet = CODE_SAMPLES[selectedLanguage] || {};
     return Object.entries(fullQuestionSet)
       .sort(() => Math.random() - 0.5)
       .slice(0, TOTAL_QUESTIONS)
-      .map(([id, q]) => ({ id, ...(q as any) }));
-  }, [fullQuestionSet]);
+      .map(([id, q]) => ({ id, ...(q as { question: string; options: string[]; correctAnswer: string; }) }));
+  }, [selectedLanguage]);
 
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
@@ -79,7 +78,7 @@ export const TestPage = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [testStarted, currentQuestionIndex]);
+  }, [testStarted, currentQuestionIndex, questions, handleNextQuestion, handlePreviousQuestion, handleSelectAnswer]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -118,56 +117,14 @@ export const TestPage = () => {
     };
   }, [testStarted]);
 
-  const handleStartTest = (name: string) => {
-    setUserName(name);
-    setLoading(true);
-    setTimeout(() => {
-      setTestStarted(true);
-      setLoading(false);
-    }, 1500);
-  };
-
-  const handleSelectAnswer = (answer: string) => {
+  const handleSelectAnswer = useCallback((answer: string) => {
     setAnswers((prev) => ({
       ...prev,
       [currentQuestionIndex]: answer,
     }));
-  };
+  }, [currentQuestionIndex]);
 
-  const handleNextQuestion = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setTransitionDirection("next");
-      setTimeout(() => {
-        setCurrentQuestionIndex((prev) => prev + 1);
-        setTransitionDirection(null);
-      }, 300);
-    } else {
-      calculateAndShowResults();
-    }
-  };
-
-  const handlePreviousQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      setTransitionDirection("prev");
-      setTimeout(() => {
-        setCurrentQuestionIndex((prev) => prev - 1);
-        setTransitionDirection(null);
-      }, 300);
-    }
-  };
-
-  const handleEndTest = () => {
-    setShowEndConfirmation(true);
-  };
-
-  const confirmEndTest = () => {
-    setLoading(true);
-    setTimeout(() => {
-      calculateAndShowResults();
-    }, 1000);
-  };
-
-  const calculateAndShowResults = () => {
+  const calculateAndShowResults = useCallback(() => {
     if (document.fullscreenElement && document.exitFullscreen) {
       document.exitFullscreen().catch((err) => {
         console.error("Error attempting to exit fullscreen:", err);
@@ -214,7 +171,7 @@ export const TestPage = () => {
     else remarks = "Needs improvement. Consider reviewing fundamentals.";
 
     const results = {
-      userName,
+      userName: "",
       totalQuestions: questions.length,
       correctAnswers: correctCount,
       incorrectAnswers: incorrectCount,
@@ -226,7 +183,40 @@ export const TestPage = () => {
       answers: detailedAnswers,
     };
     sessionStorage.setItem("testResults", JSON.stringify(results));
-    window.location.href = "/results";
+    navigate("/results");
+  }, [questions, answers, startTime, selectedLanguage, navigate]);
+
+  const handleNextQuestion = useCallback(() => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setTransitionDirection("next");
+      setTimeout(() => {
+        setCurrentQuestionIndex((prev) => prev + 1);
+        setTransitionDirection(null);
+      }, 300);
+    } else {
+      calculateAndShowResults();
+    }
+  }, [currentQuestionIndex, questions.length, calculateAndShowResults]);
+
+  const handlePreviousQuestion = useCallback(() => {
+    if (currentQuestionIndex > 0) {
+      setTransitionDirection("prev");
+      setTimeout(() => {
+        setCurrentQuestionIndex((prev) => prev - 1);
+        setTransitionDirection(null);
+      }, 300);
+    }
+  }, [currentQuestionIndex]);
+
+  const handleEndTest = () => {
+    setShowEndConfirmation(true);
+  };
+
+  const confirmEndTest = () => {
+    setLoading(true);
+    setTimeout(() => {
+      calculateAndShowResults();
+    }, 1000);
   };
 
   const cancelEndTest = () => {
@@ -234,7 +224,6 @@ export const TestPage = () => {
   };
 
   if (loading) return <LoadingOverlay />;
-  if (!testStarted) return <TestWarningModal onAgree={handleStartTest} />;
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
@@ -245,10 +234,10 @@ export const TestPage = () => {
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         <div
           className={`w-full transition-all duration-300 transform ${transitionDirection === "next"
-            ? "translate-x-full opacity-0"
-            : transitionDirection === "prev"
-              ? "-translate-x-full opacity-0"
-              : "translate-x-0 opacity-100"
+              ? "translate-x-full opacity-0"
+              : transitionDirection === "prev"
+                ? "-translate-x-full opacity-0"
+                : "translate-x-0 opacity-100"
             }`}
         >
           <TestQuestion

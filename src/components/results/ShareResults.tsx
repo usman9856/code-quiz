@@ -1,4 +1,4 @@
-import React, { useState, Component } from 'react';
+import React, { useState } from 'react';
 import { TwitterIcon, FacebookIcon, LinkedinIcon, CopyIcon, CheckIcon } from 'lucide-react';
 interface ShareResultsProps {
   score: number;

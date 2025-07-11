@@ -1,4 +1,5 @@
-import React, { createElement } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DownloadIcon, RefreshCwIcon, CodeIcon, FileTextIcon } from 'lucide-react';
 import { generatePDF } from '../../utils/PDFGenerator';
 interface Answer {
@@ -31,6 +32,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   incorrectAnswers,
   unanswered
 }) => {
+  const navigate = useNavigate();
+  
   const downloadResults = () => {
     // Create a formatted text content for the results
     const content = `
@@ -81,10 +84,10 @@ Result: ${answer.isCorrect ? 'Correct' : 'Incorrect'}
     });
   };
   const handleRetakeTest = () => {
-    window.location.href = '/test';
+    navigate('/test');
   };
   const handleTryAnotherLanguage = () => {
-    window.location.href = '/';
+    navigate('/');
   };
   return <div className="w-full flex flex-col md:flex-row justify-center gap-4 flex-wrap">
       <button onClick={downloadResults} className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors duration-200 flex items-center justify-center">

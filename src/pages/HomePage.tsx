@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Hero } from "../components/Hero";
 import { LanguageGrid } from "../components/LanguageGrid";
-import { CODE_SAMPLES } from "../constants/globalConstants";
 
 const HomePage: React.FC = () => {
 
