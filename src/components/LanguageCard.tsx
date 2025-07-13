@@ -3,7 +3,7 @@ import { CODE_SAMPLES } from "../constants/globalConstants";
 import { GlobalStore } from "../store/GlobalStore";
 import { useNavigate } from "react-router-dom";
 import { TestWarningModal } from "./test/TestWarningModal";
-import { handleStartTest } from "../utils/handleStartTest";
+import { getLanguageKeyFromDisplayName } from "../utils/languageUtils";
 
 
 interface LanguageCardProps {
@@ -19,23 +19,50 @@ export const LanguageCard = ({
   icon,
   color,
 }: LanguageCardProps) => {
-  const setSelectedLang = GlobalStore((state) => state.setSelectedLang); // <-- Use store
+  const [showModal, setShowModal] = React.useState(false);
+  const [testStarting, setTestStarting] = React.useState(false);
+  const setSelectedLang = GlobalStore((state) => state.setSelectedLang);
   const testStarted = GlobalStore((state) => state.testStarted);
+  const setTestStarted = GlobalStore((state) => state.setTestStarted);
+  const setUserName = GlobalStore((state) => state.setUserName);
+  const setLoading = GlobalStore((state) => state.setLoading);
   const navigate = useNavigate();
+  
   const handleClick = () => {
-    const langKey = title.toLowerCase() as keyof typeof CODE_SAMPLES;
+    // Use the language utility function to get the correct key
+    const langKey = getLanguageKeyFromDisplayName(title);
 
-    if (langKey in CODE_SAMPLES) {
+    if (langKey && langKey in CODE_SAMPLES) {
       setSelectedLang(langKey);
+      console.log(`Selected language: ${title} (${langKey})`);
+      setShowModal(true);
     } else {
-      console.warn(`Unknown language key: ${langKey}`);
+      console.warn(`Unknown language: ${title}`);
     }
   };
 
+  const handleStartTest = (name: string) => {
+    console.log(`Starting test for user: ${name}`);
+    
+    setUserName(name);
+    setLoading(true);
 
-  if (testStarted) return (
-    <TestWarningModal onAgree={(name) => handleStartTest(name, navigate)} />
-  );
+    setTimeout(() => {
+      setTestStarted(true);
+      setLoading(false);
+      navigate("/test");
+    }, 1500);
+  };
+
+
+  if (showModal) {
+    return (
+      <TestWarningModal 
+        onAgree={(name) => handleStartTest(name)}
+        onCancel={() => setShowModal(false)}
+      />
+    );
+  }
   return (
     <div
       onClick={handleClick}
@@ -49,12 +76,11 @@ export const LanguageCard = ({
       <div className="p-6">
         <h3 className="text-xl font-bold mb-2 text-white">{title}</h3>
         <p className="text-gray-300 text-sm">{description}</p>
-        <a
-          href="/test"
-          className={`mt-4 px-4 py-2 rounded-md text-sm font-medium text-white ${color} hover:bg-opacity-80 transition-colors duration-200 inline-block`}
+        <div
+          className={`mt-4 px-4 py-2 rounded-md text-sm font-medium text-white ${color} hover:bg-opacity-80 transition-colors duration-200 inline-block cursor-pointer`}
         >
           Take Quiz
-        </a>
+        </div>
       </div>
     </div>
   );

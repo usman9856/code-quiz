@@ -5,33 +5,23 @@ import { PythonIcon } from "../assets/svg/PythonIcon";
 import { ReactIcon } from "../assets/svg/ReactIcon";
 import { SqlIcon } from "../assets/svg/SqlIcon";
 
+// Import quiz questions
+import { JAVASCRIPT_QUESTIONS } from "../languages/javascriptQuestionare";
+import { PYTHON_QUESTIONS } from "../languages/pythonQuestionare";
+import { JAVA_QUESTIONS } from "../languages/javaQuestionare";
+import { CSHARP_QUESTIONS } from "../languages/csharpQuestionare";
+import { REACT_QUESTIONS } from "../languages/reactQuestionare";
+import { SQL_QUESTIONS } from "../languages/sqlQuestionare";
+import { CPP_QUESTIONS } from "../languages/cppQuestionare";
+
 export const CODE_SAMPLES = {
-    javascript: `function testKnowledge() {
-  const skills = ['Logic', 'Syntax', 'Algorithms', 'Best Practices'];
-  return skills.map(skill => improveSkill(skill));
-}
-
-// Start your coding journey today`,
-
-    python: `def test_knowledge():
-    skills = ["Logic", "Syntax", "Algorithms", "Best Practices"]
-    return [improve_skill(skill) for skill in skills]
-
-# Start your coding journey today`,
-
-    java: `public List<String> testKnowledge() {
-    List<String> skills = Arrays.asList("Logic", "Syntax", "Algorithms", "Best Practices");
-    return skills.stream().map(skill -> improveSkill(skill)).collect(Collectors.toList());
-}
-
-// Start your coding journey today`,
-
-    csharp: `public List<string> TestKnowledge() {
-    var skills = new List<string> { "Logic", "Syntax", "Algorithms", "Best Practices" };
-    return skills.Select(skill => ImproveSkill(skill)).ToList();
-}
-
-// Start your coding journey today`,
+    javascript: JAVASCRIPT_QUESTIONS,
+    python: PYTHON_QUESTIONS,
+    java: JAVA_QUESTIONS,
+    csharp: CSHARP_QUESTIONS,
+    react: REACT_QUESTIONS,
+    sql: SQL_QUESTIONS,
+    cpp: CPP_QUESTIONS,
 };
 
 

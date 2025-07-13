@@ -1,5 +1,6 @@
 import React from 'react';
 import { CheckCircleIcon, XCircleIcon, HelpCircleIcon, ClockIcon } from 'lucide-react';
+import { AnimatedNumber } from './AnimatedNumber';
 interface ResultsSummaryProps {
   correctAnswers: number;
   incorrectAnswers: number;
@@ -18,23 +19,21 @@ export const ResultsSummary: React.FC<ResultsSummaryProps> = ({
         <div className="p-2 rounded-full bg-green-500 bg-opacity-20 mb-3">
           <CheckCircleIcon size={28} className="text-green-400" />
         </div>
-        <span className="text-2xl font-bold text-white">{correctAnswers}</span>
+        <AnimatedNumber value={correctAnswers} delay={500} className="text-2xl font-bold text-white" />
         <span className="text-sm text-gray-300">Correct</span>
       </div>
       <div className="bg-gray-750 rounded-lg p-4 flex flex-col items-center justify-center border border-gray-700">
         <div className="p-2 rounded-full bg-red-500 bg-opacity-20 mb-3">
           <XCircleIcon size={28} className="text-red-400" />
         </div>
-        <span className="text-2xl font-bold text-white">
-          {incorrectAnswers}
-        </span>
+        <AnimatedNumber value={incorrectAnswers} delay={700} className="text-2xl font-bold text-white" />
         <span className="text-sm text-gray-300">Incorrect</span>
       </div>
       <div className="bg-gray-750 rounded-lg p-4 flex flex-col items-center justify-center border border-gray-700">
         <div className="p-2 rounded-full bg-yellow-500 bg-opacity-20 mb-3">
           <HelpCircleIcon size={28} className="text-yellow-400" />
         </div>
-        <span className="text-2xl font-bold text-white">{unanswered}</span>
+        <AnimatedNumber value={unanswered} delay={900} className="text-2xl font-bold text-white" />
         <span className="text-sm text-gray-300">Unanswered</span>
       </div>
       <div className="bg-gray-750 rounded-lg p-4 flex flex-col items-center justify-center border border-gray-700">

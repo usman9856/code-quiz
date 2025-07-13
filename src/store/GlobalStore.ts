@@ -1,5 +1,5 @@
-import { CODE_SAMPLES } from "constants/globalConstants";
 import { create } from "zustand";
+import { CODE_SAMPLES } from "../constants/globalConstants";
 
 type CodeLang = keyof typeof CODE_SAMPLES;
 
@@ -19,7 +19,10 @@ type GlobalStore = {
 
 export const GlobalStore = create<GlobalStore>((set) => ({
   selectedLang: "javascript",
-  setSelectedLang: (lang) => set({ selectedLang: lang }),
+  setSelectedLang: (lang) => {
+    console.log(`GlobalStore: Setting selected language to: ${lang}`);
+    set({ selectedLang: lang });
+  },
 
   testStarted: false,
   setTestStarted: (started) => set({ testStarted: started }),

@@ -3,10 +3,12 @@ import { AlertTriangleIcon } from "lucide-react";
 
 interface TestWarningModalProps {
   onAgree: (userName: string) => void;
+  onCancel?: () => void;
 }
 
 export const TestWarningModal: React.FC<TestWarningModalProps> = ({
   onAgree,
+  onCancel,
 }) => {
   const [userName, setUserName] = useState("");
   const [showNameError, setShowNameError] = useState(false);
@@ -33,19 +35,17 @@ export const TestWarningModal: React.FC<TestWarningModalProps> = ({
         </div>
 
         <h2 className="text-xl font-bold text-white text-center mb-4">
-          Test Mode Warning
+          Knowledge Assessment Test
         </h2>
 
         <div className="text-gray-300 mb-6 space-y-4">
-          <p>You are about to enter the full-screen test mode. Please note:</p>
+          <p>Before you begin this knowledge assessment, please note:</p>
           <ul className="list-disc pl-5 space-y-2">
-            <li>You cannot exit the test unless you confirm to stop</li>
-            <li>The test will be displayed in full-screen mode</li>
-            <li>Right-clicking and keyboard shortcuts will be disabled</li>
-            <li>
-              A Google search frame will be available at the bottom for
-              reference
-            </li>
+            <li>This is a self-assessment tool designed for personal learning and growth</li>
+            <li>You are encouraged to research and search for answers during the test</li>
+            <li>This test is not official and carries no formal accreditation or certification value</li>
+            <li>The primary purpose is to help you evaluate your current knowledge level</li>
+            <li>Results are intended for self-reflection and identifying areas for improvement</li>
           </ul>
 
           <div className="mt-4">
@@ -53,7 +53,7 @@ export const TestWarningModal: React.FC<TestWarningModalProps> = ({
               htmlFor="userName"
               className="block text-sm font-medium text-gray-300 mb-1"
             >
-              Your Name (for certificate)
+              Your Name (for personal record)
             </label>
             <input
               id="userName"
@@ -80,14 +80,14 @@ export const TestWarningModal: React.FC<TestWarningModalProps> = ({
             onClick={handleStartTest}
             className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-medium rounded-md hover:from-cyan-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105"
           >
-            I Agree, Start Test
+            I Understand, Start Assessment
           </button>
-          <a
-            href="/"
-            className="w-full sm:w-auto px-6 py-3 bg-gray-700 text-gray-300 font-medium rounded-md hover:bg-gray-600 transition-colors duration-200 text-center"
+          <button
+            onClick={onCancel}
+            className="w-full sm:w-auto px-6 py-3 bg-gray-700 text-gray-300 font-medium rounded-md hover:bg-gray-600 transition-colors duration-200"
           >
             Cancel
-          </a>
+          </button>
         </div>
       </div>
     </div>
