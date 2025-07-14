@@ -6,6 +6,8 @@ import { Layout } from "./layout/Layout";
 import { FaqPage } from "./pages/FaqPage";
 import { LanguagesPage } from "./pages/LanguagesPage";
 import { ResultsPage } from "./components/results/ResultsPage";
+import { TermsOfService } from "./pages/TermsOfService";
+import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 
 const App = () => (
   <Router>
@@ -19,7 +21,7 @@ const App = () => (
         }
       />
       <Route
-        path="/faq"
+        path="/F&Q"
         element={
           <Layout>
             <FaqPage />
@@ -39,6 +41,22 @@ const App = () => (
         element={
           <Layout>
             <AboutPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/terms-conditions"
+        element={
+          <Layout>
+            <TermsOfService />
+          </Layout>
+        }
+      />
+      <Route
+        path="/privacy-policy"
+        element={
+          <Layout>
+            <PrivacyPolicy />
           </Layout>
         }
       />

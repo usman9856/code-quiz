@@ -43,13 +43,14 @@ export const TestPage = () => {
   // Prevent back navigation during test
   useEffect(() => {
     if (testStarted) {
+      scrollTo(0, 0)
       const preventBackNavigation = () => {
         window.history.pushState(null, '', window.location.href);
         window.addEventListener('popstate', preventBackNavigation);
       };
-      
+
       preventBackNavigation();
-      
+
       return () => {
         window.removeEventListener('popstate', preventBackNavigation);
       };
