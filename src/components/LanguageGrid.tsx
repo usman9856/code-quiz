@@ -1,7 +1,9 @@
 import { LanguageCard } from "./LanguageCard";
-import { LANGUAGES } from "../constants/globalConstants";
+import { getEnabledLanguages, getLanguageIcon } from "../utils/languageLoader";
 
 export const LanguageGrid = () => {
+  const enabledLanguages = getEnabledLanguages();
+
   return (
     <section className="py-16 bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,16 +17,15 @@ export const LanguageGrid = () => {
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {LANGUAGES.map((language, index) => {
-            const Icon = language.icon;
+          {enabledLanguages.map(({ key, config }) => {
+            const IconComponent = getLanguageIcon(config.iconName);
             return (
               <LanguageCard
-                key={index}
-                title={language.title}
-                description={language.description}
-                icon={<Icon />}
-                color={language.color}
-
+                key={key}
+                title={config.title}
+                description={config.description}
+                icon={IconComponent ? <IconComponent /> : null}
+                color={config.color}
               />
             );
           })}

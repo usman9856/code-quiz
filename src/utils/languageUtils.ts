@@ -1,61 +1,55 @@
-import { CODE_SAMPLES, LANGUAGES } from "../constants/globalConstants";
+// This file is deprecated - use src/utils/languageLoader.ts instead
+// Keeping minimal exports for backward compatibility
 
-// Create a mapping between language keys and display names
-export const LANGUAGE_MAPPING = {
-  javascript: 'JavaScript',
-  python: 'Python', 
-  java: 'Java',
-  csharp: 'C#',
-  react: 'React',
-  sql: 'SQL',
-  cpp: 'C++'
-} as const;
+import { 
+  getLanguageConfig, 
+  getEnabledLanguageKeys, 
+  getAllLanguageKeys,
+  isValidLanguage
+} from './languageLoader';
 
 // Type definitions
-export type LanguageKey = keyof typeof CODE_SAMPLES;
-export type LanguageName = typeof LANGUAGE_MAPPING[LanguageKey];
+export type LanguageKey = string;
+export type LanguageName = string;
 
 /**
  * Get the display name for a language key
+ * @deprecated Use getLanguageInfo from languageLoader instead
  */
-export const getLanguageDisplayName = (languageKey: LanguageKey): string => {
-  return LANGUAGE_MAPPING[languageKey] || languageKey;
-};
-
-/**
- * Get the language key from display name
- */
-export const getLanguageKeyFromDisplayName = (displayName: string): LanguageKey | null => {
-  const entry = Object.entries(LANGUAGE_MAPPING).find(([key, name]) => name === displayName);
-  return entry ? entry[0] as LanguageKey : null;
+export const getLanguageDisplayName = (languageKey: string): string => {
+  const config = getLanguageConfig(languageKey);
+  return config?.title || languageKey;
 };
 
 /**
  * Get all available language keys
+ * @deprecated Use getEnabledLanguageKeys from languageLoader instead
  */
-export const getAvailableLanguageKeys = (): LanguageKey[] => {
-  return Object.keys(CODE_SAMPLES) as LanguageKey[];
+export const getAvailableLanguageKeys = (): string[] => {
+  return getEnabledLanguageKeys();
 };
 
 /**
- * Get language info by key
+ * Get the language key from display name
+ * @deprecated Use getLanguageInfo from languageLoader instead
  */
-export const getLanguageInfo = (languageKey: LanguageKey) => {
-  const displayName = getLanguageDisplayName(languageKey);
-  const languageData = LANGUAGES.find(lang => lang.title === displayName);
+export const getLanguageKeyFromDisplayName = (displayName: string): string | null => {
+  const enabledLanguages = getEnabledLanguageKeys();
   
-  return {
-    key: languageKey,
-    displayName,
-    description: languageData?.description || '',
-    icon: languageData?.icon,
-    color: languageData?.color || 'bg-gray-500'
-  };
+  for (const key of enabledLanguages) {
+    const config = getLanguageConfig(key);
+    if (config && config.title === displayName) {
+      return key;
+    }
+  }
+  
+  return null;
 };
 
 /**
  * Validate if a language key exists
+ * @deprecated Use isValidLanguage from languageLoader instead
  */
-export const isValidLanguageKey = (key: string): key is LanguageKey => {
-  return key in CODE_SAMPLES;
+export const isValidLanguageKey = (key: string): boolean => {
+  return isValidLanguage(key);
 };

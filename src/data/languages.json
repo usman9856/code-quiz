@@ -1,0 +1,51 @@
+{
+  "javascript": {
+    "title": "JavaScript",
+    "description": "Test your knowledge of modern JavaScript, ES6+ features, async programming, and DOM manipulation.",
+    "color": "bg-yellow-500",
+    "iconName": "JavaScriptIcon",
+    "enabled": true
+  },
+  "python": {
+    "title": "Python",
+    "description": "Challenge your Python skills with questions on syntax, data structures, libraries, and best practices.",
+    "color": "bg-blue-500",
+    "iconName": "PythonIcon",
+    "enabled": true
+  },
+  "java": {
+    "title": "Java",
+    "description": "Evaluate your Java programming skills with questions on OOP concepts, collections, threading, and more.",
+    "color": "bg-red-500",
+    "iconName": "JavaIcon",
+    "enabled": true
+  },
+  "react": {
+    "title": "React",
+    "description": "Master React concepts including hooks, state management, component lifecycle, and performance optimization.",
+    "color": "bg-cyan-500",
+    "iconName": "ReactIcon",
+    "enabled": true
+  },
+  "sql": {
+    "title": "SQL",
+    "description": "Sharpen your database skills with SQL queries, joins, indexes, and database design principles.",
+    "color": "bg-green-500",
+    "iconName": "SqlIcon",
+    "enabled": true
+  },
+  "cpp": {
+    "title": "C++",
+    "description": "Test your C++ knowledge on memory management, STL, templates, and object-oriented programming.",
+    "color": "bg-purple-500",
+    "iconName": "CPlusPlusIcon",
+    "enabled": true
+  },
+  "csharp": {
+    "title": "C#",
+    "description": "Test your C# knowledge on OOP concepts, .NET framework, LINQ, and modern C# features.",
+    "color": "bg-yellow-500",
+    "iconName": "CSharpIcon",
+    "enabled": true
+  }
+}

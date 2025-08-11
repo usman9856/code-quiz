@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { CODE_SAMPLES } from "../constants/globalConstants";
+import { getEnabledLanguageKeys } from "../utils/languageLoader";
 
-type CodeLang = keyof typeof CODE_SAMPLES;
+type CodeLang = string;
 
 type GlobalStore = {
   selectedLang: CodeLang;

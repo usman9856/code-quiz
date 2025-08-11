@@ -1,9 +1,9 @@
 import React from "react";
-import { CODE_SAMPLES } from "../constants/globalConstants";
 import { GlobalStore } from "../store/GlobalStore";
 import { useNavigate } from "react-router-dom";
 import { TestWarningModal } from "./test/TestWarningModal";
 import { getLanguageKeyFromDisplayName } from "../utils/languageUtils";
+import { isValidLanguage } from "../utils/languageLoader";
 
 
 interface LanguageCardProps {
@@ -32,7 +32,7 @@ export const LanguageCard = ({
     // Use the language utility function to get the correct key
     const langKey = getLanguageKeyFromDisplayName(title);
 
-    if (langKey && langKey in CODE_SAMPLES) {
+    if (langKey && isValidLanguage(langKey)) {
       setSelectedLang(langKey);
       console.log(`Selected language: ${title} (${langKey})`);
       setShowModal(true);
