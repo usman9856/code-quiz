@@ -25,13 +25,34 @@ export const useTestLogic = () => {
 
   const TOTAL_QUESTIONS = 5;
   
-  // Process questions using the utility function (only when test starts)
-  const questions = useMemo(() => {
-    if (!testStarted) return [];
-    console.log(`Processing questions for language: ${selectedLanguage}`);
-    const processedQuestions = processQuestionsForLanguage(selectedLanguage, TOTAL_QUESTIONS);
-    console.log(`Processed ${processedQuestions.length} questions`);
-    return processedQuestions;
+  // State for questions
+  const [questions, setQuestions] = useState<ProcessedQuestion[]>([]);
+  const [questionsLoading, setQuestionsLoading] = useState(false);
+  
+  // Load questions when test starts
+  useEffect(() => {
+    const loadQuestions = async () => {
+      if (!testStarted) {
+        setQuestions([]);
+        return;
+      }
+      
+      setQuestionsLoading(true);
+      console.log(`Processing questions for language: ${selectedLanguage}`);
+      
+      try {
+        const processedQuestions = await processQuestionsForLanguage(selectedLanguage, TOTAL_QUESTIONS);
+        console.log(`Processed ${processedQuestions.length} questions`);
+        setQuestions(processedQuestions);
+      } catch (error) {
+        console.error('Error loading questions:', error);
+        setQuestions([]);
+      } finally {
+        setQuestionsLoading(false);
+      }
+    };
+    
+    loadQuestions();
   }, [selectedLanguage, testStarted]);
 
   // Get display name for selected language
@@ -117,6 +138,7 @@ export const useTestLogic = () => {
     answers,
     startTime,
     loading,
+    questionsLoading,
     transitionDirection,
     testStarted,
     selectedLanguage,

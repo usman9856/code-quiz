@@ -1,5 +1,4 @@
-import { CODE_SAMPLES } from "../constants/globalConstants";
-import { getLanguageDisplayName } from "./languageUtils";
+import { loadQuestions, getLanguageConfig } from "./languageLoader";
 
 // Types for better type safety
 export interface QuestionData {
@@ -45,14 +44,14 @@ export const shuffleArray = <T>(array: T[]): T[] => {
 };
 
 /**
- * Process and validate questions for a given language
+ * Process and validate questions for a given language (async version)
  */
-export const processQuestionsForLanguage = (
-  language: keyof typeof CODE_SAMPLES,
+export const processQuestionsForLanguage = async (
+  language: string,
   totalQuestions: number = 5
-): ProcessedQuestion[] => {
+): Promise<ProcessedQuestion[]> => {
   try {
-    const fullQuestionSet = CODE_SAMPLES[language];
+    const fullQuestionSet = await loadQuestions(language);
     
     if (!fullQuestionSet || typeof fullQuestionSet !== 'object') {
       console.error(`No questions found for language: ${language}`);
@@ -173,13 +172,20 @@ export const calculateTestResults = (
  * Get available languages
  */
 export const getAvailableLanguages = (): string[] => {
-  return Object.keys(CODE_SAMPLES);
+  // Import from languageLoader for consistency
+  const { getEnabledLanguageKeys } = require('./languageLoader');
+  return getEnabledLanguageKeys();
 };
 
 /**
  * Check if a language has questions available
  */
-export const hasQuestionsForLanguage = (language: string): boolean => {
-  const questionSet = CODE_SAMPLES[language as keyof typeof CODE_SAMPLES];
-  return questionSet && typeof questionSet === 'object' && Object.keys(questionSet).length > 0;
+export const hasQuestionsForLanguage = async (language: string): Promise<boolean> => {
+  try {
+    const questionSet = await loadQuestions(language);
+    return questionSet && typeof questionSet === 'object' && Object.keys(questionSet).length > 0;
+  } catch (error) {
+    console.error(`Error checking questions for ${language}:`, error);
+    return false;
+  }
 };

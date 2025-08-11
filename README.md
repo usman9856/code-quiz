@@ -1,105 +1,146 @@
-# React + TypeScript + Vite Boilerplate
+# 🧠 Code Quiz Application
 
-**Version:** 2.0.0  
-_Last updated: July 11, 2025_
+**Version:** 1.1.0  
+_Last updated: January 2025_
 
-This boilerplate provides a ready-to-use setup for building React applications with TypeScript, Vite, Zustand (state management), Axios (HTTP client), Tailwind CSS, and basic route protection.
+Test your programming knowledge with our interactive quiz application! Challenge yourself with questions from multiple programming languages and track your progress.
 
----
+## 🚀 Features
 
-## Key Features
+### 🎯 **Multi-Language Support**
+Currently supporting quizzes for:
+- **JavaScript** - Modern JS, ES6+, async programming
+- **Python** - Syntax, data structures, best practices  
+- **Java** - OOP concepts, collections, threading
+- **React** - Hooks, state management, lifecycle
+- **SQL** - Queries, joins, database design
+- **C++** - Memory management, STL, templates
+- **C#** - OOP, .NET framework, LINQ
 
-1. **Vite Integration**  
-   Utilizes Vite for fast builds, efficient development, and HMR (Hot Module Replacement).
+### ⚡ **Interactive Experience**
+- Real-time quiz interface with immediate feedback
+- Randomized questions for each attempt
+- Progress tracking and detailed results
+- Score calculation with performance insights
+- Timer and attempt tracking
 
-2. **React with Tailwind CSS**  
-   Pre-configured Tailwind CSS setup for rapid UI development.
-
-3. **Zustand State Management**  
-   Lightweight and flexible state management with Zustand, featuring TypeScript support and dev tools integration.
-
-4. **Axios HTTP Client**  
-   Configured Axios instance with interceptors for request/response handling and error management.
-
-5. **Modular Architecture**  
-   Clean separation of concerns with dedicated folders for stores, services, and components.
-
-6. **Layout Management**  
-   Features a customizable layout system in the `layout/` folder, including `Layout.tsx` and `ProtectedRoute.tsx`.
-
-7. **Route Protection**  
-   Provides route protection using roles, demonstrated in `ProtectedRoute.tsx`.
-
-8. **TypeScript Support**  
-   Full TypeScript integration with proper type definitions for stores, API responses, and components.
-
-9. **Developer Experience**  
-   Includes ESLint, Prettier, and Zustand DevTools for enhanced development workflow.
+### 🎨 **Modern Design**
+- Clean, responsive interface built with React + TypeScript
+- Tailwind CSS for beautiful styling
+- Mobile-friendly design
+- Smooth animations and transitions
 
 ---
 
-## Folder Structure and File Purposes
+## 🛠️ Getting Started
 
-The project uses a flexible and customizable folder structure. Below is the updated structure:
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
 
-```
-📁 Vite Setup Boiler Code/
-├── 📄 .env.development        # Environment variables for development
-├── 📄 .eslintrc.json         # ESLint configuration for code linting
-├── 📄 .gitignore             # Ignored files for Git
-├── 📄 .prettierrc            # Prettier configuration for formatting
-├── 📄 eslint.config.js       # ESLint plugin configuration
-├── 📄 index.html             # Main HTML entry point for Vite
-├── 📄 LICENSE.txt            # Project license
-├── 📁 node_modules/          # Node dependencies (ignored)
-├── 📄 package-lock.json      # Lockfile for npm
-├── 📄 package.json           # Project metadata and dependencies
-├── 📁 public/                # Public assets
-│   └── 📄 vite.svg          # Vite logo
-├── 📄 README.md              # Project documentation
-├── 📁 src/                   # Source code directory
-│   ├── 📄 App.css           # Global app-specific CSS
-│   ├── 📄 App.tsx           # Main App component
-│   ├── 📁 assets/           # Static assets like images and icons
-│   │   ├── 📁 icon/         # Icon files
-│   │   ├── 📁 image/        # Image assets
-│   │   ├── 📄 react.svg     # React logo
-│   │   └── 📁 svg/          # SVG files
-│   ├── 📁 components/       # Reusable components
-│   │   └── 📁 users/        # User-specific components
-│   │       ├── 📄 User.tsx  # Example user component
-│   │       └── 📄 users.constants.ts # Constants for user module
-│   ├── 📁 constants/        # Project-wide constants
-│   │   ├── 📄 index.ts      # Shared constants
-│   │   └── 📄 permissionsRole.ts # Role-based permissions
-│   ├── 📄 index.css         # Global CSS imports
-│   ├── 📁 layout/           # Layout and route protection components
-│   │   ├── 📄 Layout.tsx    # Base layout component
-│   │   └── 📄 ProtectedRoute.tsx # Route protection logic
-│   ├── 📄 main.tsx          # Entry point for the React app
-│   ├── 📁 services/         # API services using Axios
-│   │   ├── 📄 index.ts      # Services barrel export
-│   │   ├── 📄 apiService.ts # Base Axios configuration
-│   │   └── 📄 userApi.ts    # User-specific API functions
-│   ├── 📁 store/            # Zustand stores
-│   │   ├── 📄 index.ts      # Stores barrel export
-│   │   └── 📄 userStore.ts  # User state management
-│   └── 📄 vite-env.d.ts     # TypeScript environment definitions
-├── 📄 tailwind.config.js     # Tailwind CSS configuration
-├── 📄 tsconfig.app.json      # TypeScript app-specific configuration
-├── 📄 tsconfig.json          # TypeScript base configuration
-├── 📄 tsconfig.node.json     # TypeScript node-specific configuration
-└── 📄 vite.config.ts         # Vite configuration
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd code-quiz-app
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser**
+   Navigate to `http://localhost:5173`
+
+### Build for Production
+```bash
+npm run build
+npm run preview
 ```
 
 ---
 
-## Dummy Users
+## 🎮 How to Use
 
-The project includes predefined dummy users with different roles for testing but have been:
+1. **Choose a Language**: Select from the available programming languages on the home page
+2. **Take the Quiz**: Answer 5 randomized questions for your chosen language
+3. **View Results**: See your score, time taken, and detailed breakdown of answers
+4. **Try Again**: Retake quizzes to improve your score
 
-- **TOKEN_USER_1** Has full access to all routes and functionalities.
-- **TOKEN_USER_2** Limited access based on role restrictions.
-- **TOKEN_USER_3** Read-only access to certain routes.
+---
 
-You can find role definitions in `constants/permissionsRole.ts`.
+## 🔧 Tech Stack
+
+- **Frontend Framework**: React 18 with TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **Icons**: Lucide React
+- **PDF Generation**: jsPDF + html2canvas
+- **Animations**: Canvas Confetti
+- **Code Quality**: ESLint + Prettier
+
+---
+
+## 👨‍💻 For Developers
+
+**Want to add a new programming language or contribute?**
+
+See our comprehensive [Developer Guide](DEVELOPER_README.md) for:
+- How to add new languages and questions
+- Project architecture overview
+- Coding guidelines and best practices
+- Testing procedures
+- Contribution guidelines
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── components/         # React components
+├── data/              # Language configurations
+├── languages/         # Question sets for each language
+├── utils/             # Utility functions
+├── templates/         # Templates for new languages
+├── pages/             # Page components
+├── assets/            # Icons and images
+└── styles/            # Global styles
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Developer Guide](DEVELOPER_README.md) for detailed instructions on:
+
+- Adding new programming languages
+- Creating quiz questions
+- Improving the user interface
+- Reporting bugs and issues
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details.
+
+---
+
+## 🌟 Features Roadmap
+
+- [ ] User accounts and progress tracking
+- [ ] Difficulty levels for questions
+- [ ] Timed quiz modes
+- [ ] Leaderboards
+- [ ] More programming languages
+- [ ] Question categories (syntax, concepts, etc.)
+- [ ] Custom quiz creation
